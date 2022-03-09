@@ -1,0 +1,11 @@
+{% extends "search/base.html" %} 
+{% block content %} 
+<ul>
+    {% for result in search_results %}
+    <li>
+        <b>{{result.manufacturer}}</b> - <i>{{result.name}}</i>
+        <p>{{result.label_text}}</p>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock content %}
