@@ -3,6 +3,15 @@ from django.http import HttpResponse
 
 from .models import *
 
+# TODO fix this temp translation
+sec_names = {
+    'indication_usage': "Indication & Usage",
+    'dosage': "Dosage & Administration",
+    'contraindication': 'Contraindication',
+    'adverse_reaction': 'Adverse Reaction',
+    'description': 'Description'
+}
+
 def index(request):
     context = {'route': 'compare/index.html'}
     return render(request, 'compare/index.html', context)
@@ -22,7 +31,7 @@ def compare_all(request):
         value2 = getattr(druglabel_obj2, field)
         
         #TODO replace this simple compare
-        data = { "sec_name": field, 
+        data = { "sec_name": sec_names[field], 
                 "label1": value1, 
                 "label2": value2 }
 
