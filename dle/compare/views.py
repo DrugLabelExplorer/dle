@@ -43,3 +43,15 @@ def compare_all(request):
         context["sections"].append(data)
 
     return render(request, 'compare/compare_all.html', context)
+
+
+def compare_diff(request):
+    #TODO
+    context = {'route': 'not implemented'}
+    return render(request, 'compare/index.html', context)
+
+
+def compare_match(request):
+    #TODO
+    context = {'route': 'not implemented'}
+    return render(request, 'compare/index.html', context)
