@@ -1,0 +1,19 @@
+{% extends "compare/layout.html" %}
+
+{% block body %}
+    
+    <!-- <p>This page is at route: {{ route }}</p> -->
+    <div id="compare-form-block">
+        <h4> Select labels to compare.</h4>
+        <form action="{% url 'compare:compare_all' %}" method="get">
+            <label for="first-label">First label: </label>
+            <input id="first-label" type="text" name="first-label" value="">
+            <label for="second-label">Second label: </label>
+            <input id="second-label" type="text" name="second-label" value="">
+            <input type="submit" value="Compare">
+        </form>
+    </div>
+
+{% endblock %}
+
+

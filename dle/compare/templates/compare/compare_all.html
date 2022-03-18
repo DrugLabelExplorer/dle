@@ -1,0 +1,59 @@
+
+{% extends "compare/layout.html" %}
+
+{% block body %}
+    <div class="container">     
+        <div class="row">
+            <h5> Comparison result. Shows all sections.</h5>
+        </div>
+        <div class="row sec-header">
+            <div class="col-sm">
+                <h6>Label info</h6>
+            </div>
+            <div class="col-sm">
+                <h6>Label info</h6>
+            </div>
+        </div>
+        <div class="row sec-content">
+            <div class="col-sm">
+                <dl>
+                    <dt>Label ID: {{ dl1.label_id }}</dt>
+                    <dt>Label Name: {{ dl1.label_name }}</dt>
+                    <dt>Label Manufacturer: {{ dl1.manufacturer }}</dt>
+                </dl>
+            </div>
+            <div class="col-sm">
+                <dl>
+                    <dt>Label ID: {{ dl2.label_id }}</dt>
+                    <dt>Label Name: {{ dl2.label_name }}</dt>
+                    <dt>Label Manufacturer: {{ dl2.manufacturer }}</dt>
+                </dl>
+            </div>
+        </div>
+        {% if sections %}
+            {% for section in sections %}
+                <!-- insert the section name -->
+                <div class="row sec-header">
+                    <div class="col-sm">
+                    <h6>{{ section.sec_name }}</h6>
+                    </div>
+                    <div class="col-sm">
+                        <h6>{{ section.sec_name }}</h6>
+                    </div>
+                </div>
+                <!-- insert the section values -->
+                <div class="row sec-content {{ section.is_match }}">
+                    <div class="col-sm">
+                        <p>{{ section.label1 }}</p>
+                    </div>
+                    <div class="col-sm">
+                      <p>{{ section.label2 }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No sections are available.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}
