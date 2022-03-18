@@ -10,5 +10,7 @@ class DrugLabel(models.Model):
     contraindication = models.TextField()
     adverse_reaction = models.TextField()
     description = models.TextField()
-    pub_date = models.DateTimeField('date published')
+
+    def __str__(self):
+        return f"Label ID: {self.label_id}\nManufacturer: {self.manufacturer}"
 
