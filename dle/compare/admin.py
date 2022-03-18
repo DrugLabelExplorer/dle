@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import DrugLabel
+
+admin.site.register(DrugLabel)
