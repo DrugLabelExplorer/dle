@@ -9,9 +9,9 @@
     </head>
     <body>
         <ul class="nav">
-            <!-- all links route back to compare/index for now-->
+            <!-- TODO: all links route back to compare/index for now-->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'compare:index' %}">Go to Search</a>
+                <a class="nav-link" href="{% url 'compare:index' %}">Main search</a>
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">

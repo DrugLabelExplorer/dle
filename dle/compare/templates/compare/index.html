@@ -2,9 +2,8 @@
 
 {% block body %}
     
-    <!-- <p>This page is at route: {{ route }}</p> -->
     <div id="compare-form-block">
-        <h4> Select labels to compare.</h4>
+        <h4> Enter labels to compare.</h4>
         <form action="{% url 'compare:compare_all' %}" method="get">
             <label for="first-label">First label: </label>
             <input id="first-label" type="text" name="first-label" value="">
