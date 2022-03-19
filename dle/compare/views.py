@@ -3,38 +3,27 @@ from django.http import HttpResponse
 
 from .models import *
 
-# TODO fix this temp translation
-sec_names = {
-    'indication_usage': "Indication & Usage",
-    'dosage': "Dosage & Administration",
-    'contraindication': 'Contraindication',
-    'adverse_reaction': 'Adverse Reaction',
-    'description': 'Description'
-}
 
 def index(request):
     context = {'route': 'compare/index.html'}
     return render(request, 'compare/index.html', context)
 
+
 def compare_all(request):
-    # get the DLs to be compared (add try/catch here)
+    # get the DLs to be compared (TODO add try/catch here)
     druglabel_obj1 = DrugLabel.objects.get(label_id = request.GET['first-label'])
     druglabel_obj2 = DrugLabel.objects.get(label_id = request.GET['second-label'])
-
     context = { 'dl1': druglabel_obj1, 'dl2': druglabel_obj2, "sections": []}
 
-    # compare each section and build context items
-    sections_fields = ['indication_usage', 'dosage', 'contraindication', 'adverse_reaction', 'description']
-
-    for field in sections_fields:
+    # compare each section and insert data in context.sections
+    for field in SEC_DISPLAY_NAMES.keys():
         value1 = getattr(druglabel_obj1, field)
         value2 = getattr(druglabel_obj2, field)
-        
-        #TODO replace this simple compare
-        data = { "sec_name": sec_names[field], 
+        data = { "sec_name": SEC_DISPLAY_NAMES[field], 
                 "label1": value1, 
                 "label2": value2 }
 
+        # compare if sections are exact match (TODO replace this with a diff algo)
         if value1 == value2:
             data["is_match"] = "sec-match" 
         else:
