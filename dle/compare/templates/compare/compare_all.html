@@ -24,13 +24,13 @@
         </div>
         {% if sections %}
             {% for section in sections %}
-                <!-- insert the section name -->
+                <!-- insert the section header -->
                 <div class="row sec-header">
                     <div class="col-sm">
                         <h5>{{ section.sec_name }}</h5>
                     </div>
                 </div>
-                <!-- insert the section values -->
+                <!-- insert the section contents, div highlighted red/green -->
                 <div class="row sec-content {{ section.is_match }}">
                     <div class="col-sm">
                         <p>{{ section.label1 }}</p>
