@@ -1,0 +1,50 @@
+{% extends "druglabelexplorer/layout.html" %}
+
+{% block body %}
+<!-- referenced previous projects and https://www.geeksforgeeks.org/help_text-django-form-field-validation/-->
+
+<div class="additem">
+
+    <h2>Upload Label</h2><br>
+
+
+    <form action="{% url 'newitem' %}" method="POST" enctype="multipart/form-data"> 
+       {% csrf_token %}
+    
+    <div class="form-group">
+        <p for="">Title</p>
+        <input type="text" name="title" maxlength="200" class="row form-control" required="" id="id_title">
+    </div> 
+    <br> 
+
+
+    <div class="form-group">
+        <p for="">Description</p>
+        <textarea name="description" cols="40" rows="10" class="row form-control" 
+        id="id_description" spellcheck="true"></textarea>
+    </div>
+    <br> 
+
+
+    <div class="form-group">
+         <p for="">Placeholder (#)</p>
+         <input type="number" name="amount" class="row form-control" required="" id="id_amount">
+    </div>
+    <br> 
+
+
+    <div class="form-group">
+        <p for="">Placeholder (link)</p>
+        <input type="url" name="image_url" maxlength="200" class="row form-control" id="id_image_url">
+    </div>
+    <br>  
+
+            
+        <input class="btn btn-dark" type="submit" value="Submit">
+        
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "druglabelexplorer/layout.html" %}
+
+{% block body %}
+
+    <div class="itempro">
+
+        <div class="item-listing">
+        <!--shows information of entered dle items-->
+            <h2>
+                 {{ item.title }}
+            </h2>
+            
+            <ul class="list-group" style="list-style-type:none">
+                <li>
+                    <div>{{ item.description }}</div>
+                    <small> Initial amount: <b>{{ item.amount }} </b></small><br><br>
+                    <small>Added by {{ item.contributor.username }} on {{ item.timeadded }}</small>
+                
+                </li>
+            </ul>
+
+            <br>
+
+            {% if user.is_authenticated %}
+                {% if on_requesteditem %}
+                <!-- flag or unflag item for requests page-->
+                    <form action="{% url 'requesteditem_delete' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <input class="btn btn-danger" type="submit" value="Remove from Requests">
+                    </form>
+                {% else %}
+                    <form action="{% url 'requesteditem_add' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <input class="btn btn-dark" type="submit" value="Add to Requests">
+                    </form>
+                {% endif %}
+            {% endif %}
+
+            <br/><br>
+
+            {% if item.image_url %}
+                <img src="{{ item.image_url }}" alt="{{ item.title }}" width="100%%">
+            {% endif %}
+            
+            
+        </div>
+
+        <div class="item-tracking">
+        <!--storage history tracker for items-->
+        
+            <h4>Track history</h4>
+            Keep track of this item by updating here
+            <br>
+            <br>
+
+            {% if user.is_authenticated %}
+            <!--need to look into onsubmit-->
+                <form name="trackingForm" action="{% url 'tracking' item.id %}" onsubmit="return ValidateForm()" method="POST" required>
+                    {% csrf_token %}
+                    <fieldset class="location-input">
+                    <input type="text" class="form-control" name="tracking" placeholder="placeholder">
+                    </fieldset>
+
+                     <fieldset class="location-input">
+                    <input class="btn btn-dark" type="Submit" value="Update">
+                    </fieldset>
+                </form>
+            {% endif %}
+
+            <br>
+
+            <ul class="list-group">
+                {% for tracking in trackings %}
+                    <li class="list-group-item">
+                        <div>
+                            <b>Location:</b><br> {{ tracking.content }}
+                        </div>
+                        <small>Updated by {{ tracking.tracker.username }} on {{ tracking.timeadded }}</small>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No location history exists for this item</li>
+                {% endfor %}
+            </ul>
+
+            
+
+        </div> 
+    </div>
+
+{% endblock %}

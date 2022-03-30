@@ -35,6 +35,7 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
+    'druglabelexplorer',
     "data.apps.DataConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -90,6 +91,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'druglabelexplorer.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -121,6 +123,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_L10N = True # Localization
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
