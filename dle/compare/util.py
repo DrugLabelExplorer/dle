@@ -14,15 +14,6 @@ SECTION_NAMES_DICT = {
     'DRIVE': 'Effects on driving',
     'SIDE': 'Side effects',
     'OVER': 'Overdose',
-    "('INDICATIONS', 'Indications')": 'Indications',
-    "('CONTRA', 'Contraindications')": 'Contraindications',
-    "('WARN', 'Warnings')": 'Warnings',
-    "('PREG', 'Pregnancy')": 'Pregnancy',
-    "('POSE', 'Posology')": 'Posology',
-    "('INTERACT', 'Interactions')": 'Interactions',
-    "('DRIVE', 'Effects on driving')": 'Effects on driving',
-    "('SIDE', 'Side effects')": 'Side effects',
-    "('OVER', 'Overdose')": 'Overdose',
 }
 
 def map_section_names(str):
@@ -84,7 +75,7 @@ def get_diff_for_diff_products(text1, text2):
     text2_swr_arr = remove_stopwords(text2).split(' ')
     common_words = set(text1_swr_arr).intersection(text2_swr_arr)
 
-    # get indeces of common words/phrases
+    # get indices of common words/phrases
     common_phrases1 = []
     common_phrases2 = []
     for word in common_words:

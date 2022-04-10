@@ -84,7 +84,7 @@ def compare_result(request):
         else:
             diff1, diff2 = get_diff_for_diff_products(text1, text2)
 
-        data = { "section_name": sec_name, 
+        data = { "section_name": SECTION_NAMES_DICT[sec_name], 
                 "section_text1": diff1,
                 "section_text2": diff2}
 
