@@ -8,7 +8,10 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
-    path("register/", views.register, name="register")
+    path("register/", views.register, name="register"),
+    path('myqueries/', views.myqueries, name='myqueries'),
+
+
     # path("newitem", views.newitem, name="newitem"),
     # path("items/<int:item_id>", views.item, name="item"),
     # path("items/<int:item_id>/tracking", views.tracking, name="tracking"),
