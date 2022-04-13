@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import User
+from .models import User, MyQueries
 
 
 def index(request):
@@ -82,3 +82,16 @@ def register(request):
 def myqueries(request):
     request.user 
     return render(request, "users/myqueries.html")
+
+# save the query to user's queries
+@login_required
+def savequery(request):
+    if request.method == "POST":
+        query = request.POST["query"]
+        results = request.POST["results"]
+        user = request.user
+        myquery = MyQueries(user=user, query=query, results=results)
+        myquery.save()
+        return render(request, "users/myqueries.html")
+    else:
+        return render(request, "users/myqueries.html")
