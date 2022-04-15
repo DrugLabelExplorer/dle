@@ -78,6 +78,27 @@ def register(request):
     else:
         return render(request, "users/register.html")
 
+
+def change_password(request):
+    if request.method == "POST":
+        old_password = request.POST["old_password"]
+        new_password = request.POST["new_password"]
+        user = authenticate(request, username=request.user.username, password=old_password)
+        if user is None:
+            return render(
+                request,
+                "users/change_password.html",
+                {"message": "Old password is incorrect."},
+            )
+        user.set_password(new_password)
+        user.save()
+        #    return HttpResponseRedirect(reverse("index"))
+        return render(request, "users/index.html")
+    else:
+        return render(request, "users/change_password.html")
+
+
+
 @login_required
 def myqueries(request):
     request.user 

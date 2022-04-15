@@ -15,5 +15,6 @@ class MyQueries(models.Model):
     date = models.DateTimeField(auto_now_add=True) # date of query
     results = models.JSONField() # results of query
 
-    def __str__(self):
+    def __str__(self): 
         return self.query
+        
