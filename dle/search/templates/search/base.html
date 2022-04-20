@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -5,8 +6,7 @@
     <script
       src="https://unpkg.com/htmx.org@1.7.0"
       integrity="sha384-EzBXYPt0/T6gxNp0nuPtLkmRpmDBbjg6WmCUZRLXBBwYYmwAUxzlSGej0ARHX0Bo"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous"></script>
     <style>
       /* clears the ‘X’ from Internet Explorer */
       input[type="search"]::-ms-clear {
@@ -32,7 +32,8 @@
     </style>
     <title>{% block title %} DLE {% endblock title %}</title>
   </head>
-  <body>
+  <body> 
+    {% include 'search/nav.html' %}
     {% block content %}{% endblock content %}
   </body>
 </html>

@@ -1,0 +1,109 @@
+.nav{
+    position: relative;
+    display: flex;
+    width: 100vw;
+    height: 10vh;
+    background: #000000;
+}
+
+ul{
+    display: flex;
+    list-style: none;
+    position: relative;
+    justify-content: space-around;
+}
+
+li a{
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+}
+
+li a:hover{
+    color: #f75d52;
+}
+
+li{
+    margin: 5vh 0;
+    transform: translateY(-50%);
+    /* background: lightsalmon; */
+}
+
+.left{
+    width: 50%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: left;
+}
+
+.right{
+    width: 50%;
+    height: 100%;
+    position: relative;
+    /* background: lightgreen; */
+}
+
+span.logo{
+    color: white;
+    font-size: 21px;
+    margin: auto 0.5em;
+}
+
+@media screen and (max-width: 678px){
+    .left{
+        width: 0%;
+    }
+    .right{
+        width: 100%;
+    }
+    .line{
+        width: 30px;
+        height: 3px;
+        background: white;
+        margin: 5px 0;
+    }
+
+    .hamburger{
+        position: absolute;
+        right: 0px;
+        margin: 5vh 1.5em;
+        transform: translateY(-50%);
+        z-index: 5;
+    }
+
+    .right .nav-links{
+        display: none;
+        transition: 0.3s;
+    }
+
+    .right .open{
+        margin-top: 10vh;
+        z-index: 3;
+        background: #0E2431;
+        display: flex;
+        flex-direction: column;
+        height: 60vh;
+        align-items: center;
+        animation: open 0.3s ease;
+    }
+
+    @keyframes close {
+        from{
+            height: 60vh;
+        }
+
+        to{
+            height: 0vh;
+        }
+    }
+
+    @keyframes open {
+        from{
+            height: 0vh;
+        }
+        to{
+            height: 60vh;
+        }
+    }
+}
