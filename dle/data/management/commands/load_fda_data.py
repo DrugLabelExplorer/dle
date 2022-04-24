@@ -13,7 +13,7 @@ from django.conf import settings
 from django.db.utils import IntegrityError, OperationalError
 
 from data.models import DrugLabel, LabelProduct, ProductSection
-from data.constants import FDA_SECTION_NAMES
+from data.constants import FDA_SECTION_NAME_MAP
 
 logger = logging.getLogger(__name__)
 
@@ -262,10 +262,10 @@ class Command(BaseCommand):
                         title = self.re_remove_nonalpha_characters.sub("", title)
                         title = self.re_combine_whitespace.sub(" ", title).strip()
 
-                        if title not in FDA_SECTION_NAMES:
+                        if title not in FDA_SECTION_NAME_MAP.keys():
                             section_name = "OTHER"
                         else:
-                            section_name = title
+                            section_name = FDA_SECTION_NAME_MAP[section_name]
 
                         # Now that we have determined what section, grab all the text in the component and add it as the
                         # value to a corresponding hashmap. If a value already exists, add it to the end
