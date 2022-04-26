@@ -35,7 +35,7 @@ def compare_result(request):
 
     try:
         label_product1 = LabelProduct.objects.filter(drug_label = drug_label1).first()
-        dl1_sections = ProductSection.objects.filter(label_product = label_product1)
+        dl1_sections = ProductSection.objects.filter(label_product = label_product1) #gives list of sections for label_product1
     except ObjectDoesNotExist:
         dl1_sections = []
 
