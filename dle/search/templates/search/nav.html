@@ -16,10 +16,27 @@
         </div>
 
         <ul class="nav-links">
-            <li><a>Upload</a></li>
-            <li><a> Compare</a></li>
-            <li><a>View</a></li>
+            <!-- TODO: all links route back to compare/index for now-->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'compare:index' %}">Drug Label Explorer</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    Signed in as <strong>{{ user.username }}</strong>
+                </li> 
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'compare:index' %}">Log Out</a>
+                </li>
+             {% else %} 
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'compare:index' %}">Log In</a>
+                </li> 
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'compare:index' %}">Register</a>
+                </li>
+            {% endif %}
         </ul>
+
     </div>
 </div>
 
@@ -30,5 +47,5 @@ ham = document.querySelector('.hamburger');
 navlinks = document.querySelector('.nav-links');
 ham.addEventListener('click', e => {
     navlinks.classList.toggle('open')
-})
+}) 
 </script>
