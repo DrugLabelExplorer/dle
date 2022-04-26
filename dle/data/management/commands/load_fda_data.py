@@ -67,12 +67,22 @@ class Command(BaseCommand):
             xml_files = self.extract_xmls(record_zips)
             # self.count_titles(xml_files)
 
+        # self.get_names(xml_files)
         self.import_records(xml_files, my_label_id=my_label_id, insert=insert)
 
         if cleanup:
             self.cleanup(record_zips)
             self.cleanup(xml_files)
         logger.info("DONE")
+
+    def get_names(self, xml_files):
+        for xml_file in xml_files:
+            with open(xml_file) as f:
+                content = BeautifulSoup(f.read(), "lxml")
+                product_name = content.find("subject").find("name").text.upper()
+                generic_name = content.find("genericmedicine").find("name").text
+                print(f"{product_name:50}\t{generic_name:50}\t{str(xml_file).split('/')[-1]}")
+
 
     def download_records(self, import_type):
         logger.info("Downloading bulk archives.")
@@ -249,7 +259,7 @@ class Command(BaseCommand):
                 dl.marketer = ""
             dl.source_product_number = content.find(
                 "code", attrs={"codesystem": "2.16.840.1.113883.6.69"}
-            ).get("code")
+            ).get("code").split("-")[0]
 
             texts = [p.text for p in content.find_all("paragraph")]
             dl.raw_text = "\n".join(texts)

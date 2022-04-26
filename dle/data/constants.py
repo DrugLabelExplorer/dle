@@ -109,9 +109,4 @@ FDA_SECTION_NAME_MAP = {
     # EDA Sections
 }
 
-
-
-
-}
-
 LASTEST_DRUG_LABELS_TABLE = "latest_drug_labels"
