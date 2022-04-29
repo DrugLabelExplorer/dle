@@ -98,15 +98,15 @@ def change_password(request):
         return render(request, "users/change_password.html")
 
 
-def like_toggle(request, postid):
+def save_toggle(request, postid):
     # this function follows spec, user can like/unlike posts
     post = Post.objects.get(pk=postid)
-    liked_post = User.objects.get(pk=request.user.pk).liked_posts
+    saved_post = User.objects.get(pk=request.user.pk).saved_posts
 
-    if post not in liked_post.all():
-        liked_post.add(post)
+    if post not in saved_post.all():
+        saved_post.add(post)
     else:
-        liked_post.remove(post)
+        saved_post.remove(post)
 
     return HttpResponse('done')
 
@@ -138,7 +138,7 @@ def profile(request, userid):
     paginator = Paginator(allpost, 10)
     page = request.GET.get('page')
 
-    return render(request, "network/profile.html", {
+    return render(request, "users/profile.html", {
         "viewed_user": User.objects.get(pk=userid),
         "allposts": paginator.get_page(page)
     })        

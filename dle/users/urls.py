@@ -12,7 +12,7 @@ urlpatterns = [
     path('myqueries/', views.myqueries, name='myqueries'),
 
     path("profile/<int:userid>", views.profile, name="profile"),
-    path("like_toggle/<int:postid>", views.like_toggle, name="like_toggle")
+    path("save_toggle/<int:postid>", views.save_toggle, name="save_toggle")
 
 
     # path("newitem", views.newitem, name="newitem"),
