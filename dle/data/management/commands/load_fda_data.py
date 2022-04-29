@@ -41,7 +41,7 @@ class Command(BaseCommand):
             "--insert", type=bool, help="Set to connect to DB", default=True
         )
         parser.add_argument(
-            "--cleanup", type=bool, help="Set to cleanup files", default=True
+            "--cleanup", type=bool, help="Set to cleanup files", default=False
         )
         parser.add_argument(
             "--my_label_id", type=int, help="set my_label_id for --type my_label", default=None
@@ -67,8 +67,9 @@ class Command(BaseCommand):
             xml_files = self.extract_xmls(record_zips)
             # self.count_titles(xml_files)
 
-        # self.get_names(xml_files)
-        self.import_records(xml_files, my_label_id=my_label_id, insert=insert)
+        xml_files = ["/Users/kennethbr/cs599/dle/dle/media/fda/xmls/a97c74e8-0133-1209-e053-2995a90a8592.xml"]
+        self.get_names(xml_files)
+        # self.import_records(xml_files, my_label_id=my_label_id, insert=insert)
 
         if cleanup:
             self.cleanup(record_zips)
@@ -76,12 +77,23 @@ class Command(BaseCommand):
         logger.info("DONE")
 
     def get_names(self, xml_files):
+        xml_files = xml_files[:1000]
+        unapproved_count = 0
+        exception_count = 0
         for xml_file in xml_files:
             with open(xml_file) as f:
                 content = BeautifulSoup(f.read(), "lxml")
                 product_name = content.find("subject").find("name").text.upper()
                 generic_name = content.find("genericmedicine").find("name").text
-                print(f"{product_name:50}\t{generic_name:50}\t{str(xml_file).split('/')[-1]}")
+                try:
+                    unapproved_bool = "unapproved" in content.find("approval").find("code").get("displayname").lower()
+                except:
+                    exception_count +=1
+                    unapproved_bool = False
+                if unapproved_bool:
+                    unapproved_count += 1
+                    print(f"{product_name:50}\t{generic_name:50}\t{str(xml_file).split('/')[-1]}")
+        print(f"{unapproved_count}:{len(xml_files)}\t{exception_count}")
 
 
     def download_records(self, import_type):
@@ -259,7 +271,7 @@ class Command(BaseCommand):
                 dl.marketer = ""
             dl.source_product_number = content.find(
                 "code", attrs={"codesystem": "2.16.840.1.113883.6.69"}
-            ).get("code").split("-")[0]
+            ).get("code")
 
             texts = [p.text for p in content.find_all("paragraph")]
             dl.raw_text = "\n".join(texts)
