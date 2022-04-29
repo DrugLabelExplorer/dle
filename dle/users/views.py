@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import User, MyQueries
+from .models import User, MyQueries, Post
 
 
 def index(request):
@@ -97,6 +97,18 @@ def change_password(request):
     else:
         return render(request, "users/change_password.html")
 
+
+def like_toggle(request, postid):
+    # this function follows spec, user can like/unlike posts
+    post = Post.objects.get(pk=postid)
+    liked_post = User.objects.get(pk=request.user.pk).liked_posts
+
+    if post not in liked_post.all():
+        liked_post.add(post)
+    else:
+        liked_post.remove(post)
+
+    return HttpResponse('done')
 
 
 @login_required
