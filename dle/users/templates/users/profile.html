@@ -1,0 +1,55 @@
+{% extends "users/layout.html" %}
+
+{% block body %}
+
+<div class="mx-auto m-4 card" style="width: 20rem;">
+    <div class="card-header">
+    <!--card shows account info following specs-->
+      Username: {{user.username.capitalize}} 
+      {% if user != viewed_user %}
+      <!--user can follow/unfollow other accounts following specs-->
+        <button class="bt btn-primary" id="displayed" data-id="{{viewed_user.id}}">
+            {% if viewed_user in user.following.all %}
+                Unfollow
+            {% else %}
+                Follow
+            {% endif %}
+        </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <nav>
+    <!--navigation tool to toggle through pages following pagination specs-->
+    <ul class="justify-content-center pagination">
+      {% if allposts.has_previous %}
+      <!--allows previous to be active only if there is a previous page-->
+      <!--referenced w3schools and section discussion-->
+        <li class="page-item">
+            <a class="page-link" href="?page={{ allposts.previous_page_number }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+      {% endif %}
+      
+
+      {% for n in allposts.paginator.page_range %}
+      <!--accounting for necessary pages following spec-->
+        {% if allposts.number == n %}
+            <li class="page-item active"><a class="page-link" href="?page={{n}}">{{n}}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{n}}">{{n}}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if allposts.has_next %}
+      <!--if more than 10 posts, option for next page is active -->
+        <li class="page-item">
+            <a class="page-link" href="?page={{ allposts.next_page_number }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endblock %}

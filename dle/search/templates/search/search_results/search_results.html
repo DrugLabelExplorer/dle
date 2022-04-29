@@ -15,6 +15,14 @@
       </h2>
     </div>
     <p class="text-gray-800">...{{highlighted_text|safe}}...</p>
+    {% if user.is_authenticated %}
+    {% if user in post.likers.all %}
+        <a href="#a" class="like_or_unlike" data-postid="{{post.pk}}">Unsave</a> 
+    {% else %} 
+        <a href="#a" class="like_or_unlike" data-postid="{{post.pk}}">Save</a> 
+    {% endif %}
+    {% endif %}
+    <br> <p style="color: red;">♥ <span style="color: black;"id="span{{post.pk}}">{{ post.likers.all | length }} </span> </p>
   </div>
   {% endfor %}
 </ul>
