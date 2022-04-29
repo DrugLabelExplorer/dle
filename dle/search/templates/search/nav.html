@@ -2,11 +2,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'search/static/nav.css' %}">
 
 <div class="nav">
-    <div class="left">
+    <!--<div class="left">
         <span class="logo">
             DrugLabelExplorer
         </span>
-    </div>
+    </div>-->
 
     <div class="right">
         <div class="hamburger">
@@ -16,9 +16,9 @@
         </div>
 
         <ul class="nav-links">
-            <!-- TODO: all links route back to compare/index for now-->
+          
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'compare:index' %}">Drug Label Explorer</a>
+                <a class="nav-link" href="{% url 'index' %}">Drug Label Explorer</a>
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">

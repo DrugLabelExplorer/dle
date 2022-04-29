@@ -6,7 +6,7 @@ import decimal
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-
+from django.core.paginator import Paginator
 # from .forms import CreateItemForm
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -116,3 +116,17 @@ def savequery(request):
         return render(request, "users/myqueries.html")
     else:
         return render(request, "users/myqueries.html")
+
+
+@login_required(login_url='login')
+# user can view any user profile according to specs
+def profile(request, userid):
+    allpost = User.objects.get(
+        pk=userid).posts_created.order_by('-timestamp').all()
+    paginator = Paginator(allpost, 10)
+    page = request.GET.get('page')
+
+    return render(request, "network/profile.html", {
+        "viewed_user": User.objects.get(pk=userid),
+        "allposts": paginator.get_page(page)
+    })        

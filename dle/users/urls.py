@@ -11,6 +11,9 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path('myqueries/', views.myqueries, name='myqueries'),
 
+    path("profile/<int:userid>", views.profile, name="profile"),
+    path("like_toggle/<int:postid>", views.like_toggle, name="like_toggle")
+
 
     # path("newitem", views.newitem, name="newitem"),
     # path("items/<int:item_id>", views.item, name="item"),
