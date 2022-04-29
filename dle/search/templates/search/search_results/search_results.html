@@ -22,7 +22,7 @@
         <a href="#a" class="like_or_unlike" data-postid="{{post.pk}}">Save</a> 
     {% endif %}
     {% endif %}
-    <br> <p style="color: red;">♥ <span style="color: black;"id="span{{post.pk}}">{{ post.likers.all | length }} </span> </p>
+    <br> <p style="color: rgb(0, 110, 255);">♥ <span style="color: black;"id="span{{post.pk}}">{{ post.likers.all | length }} </span> </p>
   </div>
   {% endfor %}
 </ul>
