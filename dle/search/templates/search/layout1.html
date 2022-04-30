@@ -25,10 +25,6 @@
             <ul class="nav">
             <!--navigation tool for moving to different pages-->
             {% if user.is_authenticated %}
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">Add Item</a>
-                </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'myqueries' %}"> {{ user.username.capitalize }}</a>
                     </li>
