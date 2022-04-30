@@ -6,16 +6,7 @@
     <div class="card-header">
     <!--card shows account info following specs-->
       Username: {{user.username.capitalize}} 
-      {% if user != viewed_user %}
-      <!--user can follow/unfollow other accounts following specs-->
-        <button class="bt btn-primary" id="displayed" data-id="{{viewed_user.id}}">
-            {% if viewed_user in user.following.all %}
-                Unfollow
-            {% else %}
-                Follow
-            {% endif %}
-        </button>
-      {% endif %}
+     
     </div>
   </div>
 
