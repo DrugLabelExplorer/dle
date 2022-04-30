@@ -65,36 +65,44 @@ class Command(BaseCommand):
             root_zips = self.download_records(import_type)
             record_zips = self.extract_prescription_zips(root_zips)
             xml_files = self.extract_xmls(record_zips)
-            # self.count_titles(xml_files)
 
-        xml_files = ["/Users/kennethbr/cs599/dle/dle/media/fda/xmls/a97c74e8-0133-1209-e053-2995a90a8592.xml"]
-        self.get_names(xml_files)
-        # self.import_records(xml_files, my_label_id=my_label_id, insert=insert)
+        self.import_records(xml_files, my_label_id=my_label_id, insert=insert)
 
         if cleanup:
             self.cleanup(record_zips)
             self.cleanup(xml_files)
         logger.info("DONE")
 
+    # Test function for data exploration
     def get_names(self, xml_files):
-        xml_files = xml_files[:1000]
         unapproved_count = 0
         exception_count = 0
+        total_count = 0
         for xml_file in xml_files:
+            total_count += 1
             with open(xml_file) as f:
                 content = BeautifulSoup(f.read(), "lxml")
-                product_name = content.find("subject").find("name").text.upper()
-                generic_name = content.find("genericmedicine").find("name").text
+                product_name = ""
+                generic_name = ""
                 try:
-                    unapproved_bool = "unapproved" in content.find("approval").find("code").get("displayname").lower()
-                except:
-                    exception_count +=1
+                    product_name = content.find("subject").find("name").text.upper()
+                    generic_name = content.find("genericmedicine").find("name").text
                     unapproved_bool = False
+                    approval = content.find("approval")
+                    if approval is not None:
+                        for code in approval.find_all("code"):
+                            if "unapproved" in code.get("displayname", "").lower():
+                                unapproved_bool = True
+                except Exception as e:
+                    print(e)
+                    exception_count +=1
                 if unapproved_bool:
                     unapproved_count += 1
                     print(f"{product_name:50}\t{generic_name:50}\t{str(xml_file).split('/')[-1]}")
-        print(f"{unapproved_count}:{len(xml_files)}\t{exception_count}")
+            if total_count % 100 == 0:
+                print(f"{unapproved_count}:{len(xml_files)}\t{exception_count}")
 
+        print(f"{unapproved_count}:{len(xml_files)}\t{exception_count}")
 
     def download_records(self, import_type):
         logger.info("Downloading bulk archives.")
@@ -248,6 +256,12 @@ class Command(BaseCommand):
     def process_xml_file(self, xml_file, insert, dl):
         with open(xml_file) as f:
             content = BeautifulSoup(f.read(), "lxml")
+
+            # Skip unapproved drug labels
+            if self.check_if_unapproved(content):
+                logger.info(f"Skipping {xml_file} because it is not approved")
+                return
+
             dl.source = "FDA"
             dl.product_name = content.find("subject").find("name").text.upper()
             try:
@@ -355,6 +369,19 @@ class Command(BaseCommand):
                     logger.error(str(e))
                 except OperationalError as e:
                     logger.error(str(e))
+
+    def check_if_unapproved(self, content):
+        unapproved_bool = False  # Assume it is approved
+        try:
+            approval = content.find("approval")
+            if approval is not None:
+                for code in approval.find_all("code"):
+                    if "unapproved" in code.get("displayname", "").lower():
+                        unapproved_bool = True
+        except Exception as e:
+            logger.warning(e)
+            return False
+        return unapproved_bool
 
     def cleanup(self, files):
         for file in files:
