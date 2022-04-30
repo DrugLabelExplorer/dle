@@ -8,12 +8,7 @@
         </span>
     </div>-->
 
-    <div class="right">
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
+
 
         <ul class="nav-links">
           
@@ -22,7 +17,7 @@
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    Signed in as <strong>{{ user.username }}</strong>
+                    Welcome <strong>{{ user.username }}</strong>
                 </li> 
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'compare:index' %}">Log Out</a>
@@ -41,11 +36,3 @@
 </div>
 
 <script type="text/javascript" src="{% static 'search/static/nav.js' %}"></script>
-<script type="text/javascript">
-
-ham = document.querySelector('.hamburger');
-navlinks = document.querySelector('.nav-links');
-ham.addEventListener('click', e => {
-    navlinks.classList.toggle('open')
-}) 
-</script>
