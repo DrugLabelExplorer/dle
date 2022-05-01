@@ -6,7 +6,7 @@ from data.models import DrugLabel
 class User(AbstractUser):
     # this class consists of requested item as it is unique to each user
     #pass
-    liked_posts = models.ManyToManyField(
+    saved_posts = models.ManyToManyField(
         "Post", blank=True, related_name="likers")
 
 class MyQueries(models.Model):

@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='user',
-            name='liked_posts',
+            name='saved_posts',
             field=models.ManyToManyField(blank=True, related_name='likers', to='users.Post'),
         ),
     ]

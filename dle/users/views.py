@@ -17,6 +17,7 @@ import datetime as dt
 from django.core import management
 from .models import User, MyQueries, Post, MyLabel
 
+
 @login_required
 def index(request):
     return render(request, "users/index.html")
@@ -137,10 +138,15 @@ def profile(request, userid):
     paginator = Paginator(allpost, 10)
     page = request.GET.get('page')
 
-    return render(request, "users/profile.html", {
+    #return render(request, "users/profile.html", {
+    #    "viewed_user": User.objects.get(pk=userid),
+    #    "allposts": paginator.get_page(page)
+    #})       
+    profile_context = {
         "viewed_user": User.objects.get(pk=userid),
         "allposts": paginator.get_page(page)
-    })        
+    }
+    return redirect(reverse('users/profile', profile_context)) 
 
 
 @login_required
