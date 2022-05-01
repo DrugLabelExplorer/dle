@@ -21,15 +21,14 @@ class MyQueries(models.Model):
         
 
 class Post(models.Model):
-    # Post class includes author/account, post contents and timestamp
-    # referenced prior lecture notes
-    author = models.ForeignKey(
-        "User", on_delete=models.CASCADE, related_name="posts_created")
+    # Post class includes user/account, post contents and timestamp
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="posts_created")
     content = models.CharField(max_length=1000) #this would be the drug label in search results
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.content[:10]} {self.author.username}"        
+        return f"{self.content[:10]} {self.user.username}"        
 
 
 class MyLabel(models.Model):
