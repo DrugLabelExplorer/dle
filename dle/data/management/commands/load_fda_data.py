@@ -283,9 +283,9 @@ class Command(BaseCommand):
                 dl.marketer = content.find("author").find("name").text.upper()
             except AttributeError:
                 dl.marketer = ""
-            dl.source_product_number = content.find(
-                "code", attrs={"codesystem": "2.16.840.1.113883.6.69"}
-            ).get("code")
+            # Ensure always selecting the same ndc code if multiple
+            ndc_codes = [ndc_code.get("code") for ndc_code in content.find_all("code", attrs={"codesystem": "2.16.840.1.113883.6.69"})]
+            dl.source_product_number = sorted(ndc_codes)[0]
 
             texts = [p.text for p in content.find_all("paragraph")]
             dl.raw_text = "\n".join(texts)
@@ -371,17 +371,15 @@ class Command(BaseCommand):
                     logger.error(str(e))
 
     def check_if_unapproved(self, content):
-        unapproved_bool = False  # Assume it is approved
         try:
             approval = content.find("approval")
             if approval is not None:
                 for code in approval.find_all("code"):
                     if "unapproved" in code.get("displayname", "").lower():
-                        unapproved_bool = True
+                        return True  # It is unapproved
         except Exception as e:
             logger.warning(e)
-            return False
-        return unapproved_bool
+        return False  # Otherwise assume it is approved
 
     def cleanup(self, files):
         for file in files:
