@@ -263,14 +263,14 @@ class Command(BaseCommand):
                 return
 
             dl.source = "FDA"
-            dl.product_name = content.find("subject").find("name").text.upper()
+            dl.product_name = content.find("subject").find("name").text.title()
             try:
                 generic_name = content.find("genericmedicine").find("name").text
             except AttributeError:
                 # don't insert record if we cannot find this
                 logger.error("unable to find generic_name")
                 return
-            dl.generic_name = generic_name[:255]
+            dl.generic_name = generic_name[:255].title()
 
             try:
                 dl.version_date = datetime.strptime(
@@ -280,15 +280,16 @@ class Command(BaseCommand):
                 dl.version_date = datetime.now()
 
             try:
-                dl.marketer = content.find("author").find("name").text.upper()
+                dl.marketer = content.find("author").find("name").text.title()
             except AttributeError:
                 dl.marketer = ""
             # Ensure always selecting the same ndc code if multiple
             ndc_codes = [ndc_code.get("code") for ndc_code in content.find_all("code", attrs={"codesystem": "2.16.840.1.113883.6.69"})]
             dl.source_product_number = sorted(ndc_codes)[0]
 
-            texts = [p.text for p in content.find_all("paragraph")]
-            dl.raw_text = "\n".join(texts)
+            # texts = [p.text for p in content.find_all("paragraph")]
+            # dl.raw_text = "\n".join(texts)
+            dl.raw_rext = ""
 
             lp = LabelProduct(drug_label=dl)
 
@@ -358,7 +359,7 @@ class Command(BaseCommand):
             for section_name, section_text in section_map.items():
                 ps = ProductSection(
                     label_product=lp,
-                    section_name=section_name.upper(),
+                    section_name=section_name.title(),
                     section_text=section_text,
                 )
                 try:
