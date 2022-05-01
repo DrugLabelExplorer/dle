@@ -34,7 +34,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return redirect(reverse("users:index"))
+            return redirect(reverse("index"))
 
         else:
             return render(
@@ -130,7 +130,7 @@ def savequery(request):
         return render(request, "users/myqueries.html")
 
 
-@login_required(login_url='login')
+@login_required
 # user can view any user profile according to specs
 def profile(request, userid):
     allpost = User.objects.get(

@@ -16,7 +16,7 @@
     </div>
     <p class="text-gray-800">...{{highlighted_text|safe}}...</p>
     {% if user.is_authenticated %}
-    {% if user in post.likers.all %}
+    {% if user in post.savers.all %}
         <a href="#a" class="like_or_unlike" data-postid="{{post.pk}}">Unsave</a> 
     {% else %} 
         <a href="#a" class="like_or_unlike" data-postid="{{post.pk}}">Save</a> 

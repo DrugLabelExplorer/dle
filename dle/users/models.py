@@ -7,7 +7,7 @@ class User(AbstractUser):
     # this class consists of requested item as it is unique to each user
     #pass
     saved_posts = models.ManyToManyField(
-        "Post", blank=True, related_name="likers")
+        "Post", blank=True, related_name="savers")
 
 class MyQueries(models.Model):
     # this class consists of my queries as it is unique to each user
