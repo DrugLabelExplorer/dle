@@ -1,4 +1,37 @@
-{% extends "search/base.html" %} {% block content %}
+{% extends "search/base.html" %}
+
+{% block head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script
+  src="https://unpkg.com/htmx.org@1.7.0"
+  integrity="sha384-EzBXYPt0/T6gxNp0nuPtLkmRpmDBbjg6WmCUZRLXBBwYYmwAUxzlSGej0ARHX0Bo"
+  crossorigin="anonymous"></script>
+<style>
+  /* clears the ‘X’ from Internet Explorer */
+  input[type="search"]::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  input[type="search"]::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* clears the ‘X’ from Chrome */
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+  }
+  input::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
 
 <!-- START SEARCH NAV BAR -->
 <div class="width-max h-30 bg-white sticky top-0 shadow-lg">
@@ -53,23 +86,6 @@
         class="ml-3 form-checkbox h-5 w-5 text-gray-600 cursor-pointer compare-checkbox"
         onclick="_searchresult_handleSelectClick()" value={{result.id}} />
     </div>
-    <p class="text-gray-800">...{{highlighted_text|safe}}...</p>
-
-
-    {% if user.is_authenticated %}
-    {% if user in post.savers.all %}
-        <a href="#a" class="like_or_unlike" data-postid="{{post.pk}}">Unsave</a> 
-    {% else %} 
-        <a href="#a" class="like_or_unlike" data-postid="{{post.pk}}">Save</a> 
-    {% endif %}
-    {% endif %}
-    <br> <p style="color: rgb(0, 110, 255);">♥ <span style="color: black;"id="span{{post.pk}}">{{ post.likers.all | length }} </span> </p>
-  </div>
-  {% endfor %}
-
-
-</ul>
-
   </div>
 </div>
 {% endfor %}
@@ -93,8 +109,6 @@
   </span>
 </div>
 {% endif %}
-
-
 
 {% else %}
 <div class="max-w-xl mb-8 md:ml-48">
