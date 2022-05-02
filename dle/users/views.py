@@ -98,17 +98,17 @@ def change_password(request):
         return render(request, "users/change_password.html")
 
 
-def save_toggle(request, postid):
+#def save_toggle(request, postid):
     # this function follows spec, user can like/unlike posts
-    post = Post.objects.get(pk=postid)
-    saved_post = User.objects.get(pk=request.user.pk).saved_posts
+#    post = Post.objects.get(pk=postid)
+#    saved_post = User.objects.get(pk=request.user.pk).saved_posts
 
-    if post not in saved_post.all():
-        saved_post.add(post)
-    else:
-        saved_post.remove(post)
+#    if post not in saved_post.all():
+#        saved_post.add(post)
+#    else:
+#        saved_post.remove(post)
 
-    return HttpResponse('done')
+#    return HttpResponse('done')
 
 
 @login_required
@@ -137,6 +137,12 @@ def profile(request):
     return render(request, "users/profile.html", {"user": user})
     #return redirect(reverse('users/profile', profile_context)) 
 
+# user can view saved posts on their profile
+def savedposts(request):
+    user = request.user
+    saved_posts = user.saved_posts.all()
+    return render(request, "users/savedposts.html", {"saved_posts": saved_posts})
+    
 
 @login_required
 def my_labels_view(request, msg=None):
