@@ -1,11 +1,8 @@
 from django.db import models
-
 from django.contrib.auth.models import AbstractUser
 from data.models import DrugLabel
 
-# Create your models here.
 class User(AbstractUser):
-    # this class consists of requested item as it is unique to each user
     pass
 
 class MyQueries(models.Model):
@@ -39,7 +36,7 @@ class Like(models.Model):
     def __str__(self):
         return f"{self.user} liked {self.post}"
 
-        
+
 class MyLabel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     drug_label = models.ForeignKey(DrugLabel, on_delete=models.CASCADE)

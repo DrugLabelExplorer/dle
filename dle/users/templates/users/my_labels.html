@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 {% extends "search/base.html" %}
 
+{% block title %}MyLabels{% endblock title %}
+
 {% block content %}
+
 <h4>Upload Label</h4>
 <form method="post" action="/users/my_labels/create/" enctype="multipart/form-data">
     {% csrf_token %}
     <table>
         {{ form.as_table }}
     </table>
+
     <input class="btn btn-dark" type="submit" value="Submit">
 </form>
 <br><br><br><br>

@@ -4,29 +4,46 @@ import gensim
 from gensim.parsing.preprocessing import remove_stopwords
 from .models import *
 
-SECTION_NAMES_DICT = {
-    'INDICATIONS': 'Indications',
-    'CONTRA': 'Contraindications',
-    'WARN': 'Warnings',
-    'PREG': 'Pregnancy',
-    'POSE': 'Posology',
-    'INTERACT': 'Interactions',
-    'DRIVE': 'Effects on driving',
-    'SIDE': 'Side effects',
-    'OVER': 'Overdose',
-    "('INDICATIONS', 'Indications')": 'Indications',
-    "('CONTRA', 'Contraindications')": 'Contraindications',
-    "('WARN', 'Warnings')": 'Warnings',
-    "('PREG', 'Pregnancy')": 'Pregnancy',
-    "('POSE', 'Posology')": 'Posology',
-    "('INTERACT', 'Interactions')": 'Interactions',
-    "('DRIVE', 'Effects on driving')": 'Effects on driving',
-    "('SIDE', 'Side effects')": 'Side effects',
-    "('OVER', 'Overdose')": 'Overdose',
-}
-
-def map_section_names(str):
-    return SECTION_NAMES_DICT[str]
+# Sorting of FDA sections/subsections as they appear on
+# an FDA Prescribing Information
+SECTIONS_ORDER = [
+    "BOXED WARNING",
+    "RECENT MAJOR CHANGES",
+    "INDICATIONS AND USAGE",
+    "DOSAGE ADMINISTRATION",
+    "DOSAGE FORMS STRENGTHS",
+    "CONTRAINDICATIONS",
+    "WARNINGS AND PRECAUTIONS",
+    "ADVERSE REACTIONS",
+    "DRUG INTERACTIONS",
+    "USE IN SPECIFIC POPULATIONS",
+    "PREGNANCY",
+    "LABOR AND DELIVERY",
+    "NURSING MOTHERS",
+    "PEDIATRIC",
+    "GERIATRIC USE",
+    "GERIATRIC",
+    "DRUG ABUSE AND DEPENDENCE",
+    "CONTROLLED SUBSTANCE",
+    "ABUSE",
+    "DEPENDENCE",
+    "OVERDOSAGE",
+    "DESCRIPTION",
+    "CLINICAL PHARMACOLOGY",
+    "MECHANISM OF ACTION",
+    "PHARMACODYNAMICS",
+    "PHARMACOKINETICS",
+    "MICROBIOLOGY",
+    "PHARMACOGENOMICS",
+    "NONCLINICAL TOXICOLOGY",
+    "CARCINOGENESIS MUTAGENESIS AND IMPAIRMENT OF FERTILITY",
+    "ANIMAL PHARMACOLOGY OR TOXICOLOGY",
+    "CLINICAL STUDIES",
+    "REFERENCES",
+    "HOW SUPPLIED",
+    "STORAGE AND HANDLING",
+    "PATIENT COUNSELING INFORMATION"
+]
 
 def get_diff_for_diff_versions(text1, text2):
     dmp = dmp_module.diff_match_patch()

@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# can override settings in .env, see .env.example
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,30 +25,32 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 MEDIA_ROOT = BASE_DIR / "media"
 
 ALLOWED_HOSTS = [
-    "34.218.101.115",
     "druglabelexplorer.org",
     "www.druglabelexplorer.org",
     "127.0.0.1",
-    "localhost",    
+    "localhost",
+    "testserver",
 ]
 
-# Quick-start development settings - unsuitable for production
+# Deployment checklist
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-_6bj_d%p=_-uxqkg7dzg=8e7@35g2b8q08gtjq=$%spegl*v-_"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "django-insecure-_6bj_d%p=_-uxqkg7dzg=8e7@35g2b8q08gtjq=$%spegl*v-_"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", False)
 
 LOGIN_URL = "users/login/"
+
 # Application definition
 
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',
+    "users.apps.UsersConfig",
     "data.apps.DataConfig",
     "compare.apps.CompareConfig",
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -53,7 +59,7 @@ INSTALLED_APPS = [
     "search.apps.SearchConfig",
 ]
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -94,13 +100,15 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "dle",
         "USER": "dle_user",
-        "PASSWORD": "uDyvfMXHIKCJ",
-        # 'HOST': '172.31.12.231', # private IP
-        "HOST": "44.238.69.61",  # public IP
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "uDyvfMXHIKCJ"),
+        "HOST": os.environ.get("DATABASE_HOST", "drug-label-db.org"),
         "PORT": "3306",
     }
 }
 
+# override host for CI process
+if os.environ.get("GITHUB_WORKFLOW"):
+    DATABASES["default"]["HOST"] = "127.0.0.1"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -120,7 +128,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -132,7 +139,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-USE_L10N = True 
+USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # parameters
 
@@ -125,7 +126,7 @@ pip install -r /var/www/django/dle/dle/requirements.txt
 
 # - Apache configuration
 
-sudo cp /var/www/django/dle/setup/dle.conf /etc/httpd/conf.d/dle.conf
+sudo cp /var/www/django/dle/docs/setup/dle.conf /etc/httpd/conf.d/dle.conf
 
 sudo systemctl start httpd
 sudo systemctl enable httpd
@@ -137,16 +138,16 @@ sudo systemctl enable httpd
 sudo yum install mod_ssl -y
 cd /etc/pki/tls/certs
 sudo ./make-dummy-cert localhost.crt
-sudo cp /var/www/django/dle/setup/ssl.conf /etc/httpd/conf.d/ssl.conf
+sudo cp /var/www/django/dle/docs/setup/ssl.conf /etc/httpd/conf.d/ssl.conf
 
 # certbot for Let's Encrypt SSL cert
 sudo amazon-linux-extras install epel -y
 sudo yum install python2-certbot-apache.noarch -y
 
-sudo cp /var/www/django/dle/setup/httpd.conf /etc/httpd/conf/httpd.conf
+sudo cp /var/www/django/dle/docs/setup/httpd.conf /etc/httpd/conf/httpd.conf
 sudo systemctl restart httpd
 
-# needs virtal host setup on port 80 first
+# needs virtual host setup on port 80 first
 # needs Apache running first
 sudo certbot --apache -d $HOST -d $HOST_ALIAS -m $HOST_EMAIL -n --agree-tos
 
@@ -154,18 +155,30 @@ sudo systemctl restart httpd
 
 #####
 
-# - Setup cron entries
-
-python /var/www/django/dle/dle/manage.py makemigrations
+# create tables in db (if necessary)
+# assumes this was already ran and the output checked into git:
+#   python /var/www/django/dle/dle/manage.py makemigrations
 python /var/www/django/dle/dle/manage.py migrate
-sudo certbot renew
 
-# TODO make a file with the commands to run
-# run once a month
-line="1 1 1 * * /path/to/command"
-# append to crontab
-(crontab -u $(whoami) -l; echo "$line" ) | crontab -u $(whoami) -
-# ref: https://askubuntu.com/a/58582
+# initial db data loading
+python /var/www/django/dle/dle/manage.py load_ema_data --type full
+python /var/www/django/dle/dle/manage.py load_fda_data --type full
+python /var/www/django/dle/dle/manage.py update_latest_drug_labels
+
+# after loading the data reset the permissions for the media dir
+sudo chown -R ec2-user:apache /var/www/django/dle/dle/media/
+
+# - Setup cron entries
+CRONLOG="/home/ec2-user/cron.log"
+cat > /home/ec2-user/dle.cron <<EOF
+1 1 1 * * python /var/www/django/dle/dle/manage.py load_ema_data --type full >> $CRONLOG 2>&1
+1 2 1 * * python /var/www/django/dle/dle/manage.py load_fda_data --type monthly >> $CRONLOG 2>&1
+1 10 1 * * python /var/www/django/dle/dle/manage.py update_latest_drug_labels >> $CRONLOG 2>&1
+1 1 1 * * sudo certbot renew
+EOF
+
+# append to crontab for ec2-user
+(sudo crontab -u ec2-user -l; cat /home/ec2-user/dle.cron ) | sudo crontab -u ec2-user -
 
 #####
 

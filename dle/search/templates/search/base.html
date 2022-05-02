@@ -2,7 +2,8 @@
 <html lang="en">
     <head>
         {% load static %}
-        <title>DLE</title>
+        <meta charset="UTF-8">
+        <title>{% block title %}DLE{% endblock title %}</title>
         <link rel="icon" href="{% static 'search/dle-logo.png' %}">
         <script src="https://cdn.tailwindcss.com"></script>
         <script
@@ -45,5 +46,6 @@
     <body>
         {% include 'search/header.html' %}
         {% block content %}{% endblock %}
+        {% block footer_scripts %}{% endblock %}
     </body>
 </html>

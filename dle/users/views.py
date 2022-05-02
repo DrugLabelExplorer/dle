@@ -1,21 +1,16 @@
-from django.shortcuts import render
-
-# Create your views here.
-import decimal
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError, connection
-from django.core.paginator import Paginator
-# from .forms import CreateItemForm
-from .forms import MyLabelForm
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponse
+from .models import MyQueries, Post
+from django.db import IntegrityError
+from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils import timezone
+from .models import User, MyLabel
+from data.models import DrugLabel
+from .forms import MyLabelForm
 import datetime as dt
 from django.core import management
-from .models import User, MyQueries, Post, MyLabel
+from django.db import connection
 
 
 @login_required
@@ -34,8 +29,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return redirect(reverse("index"))
-
+            return redirect(reverse("users:index"))
         else:
             return render(
                 request,
@@ -135,7 +129,6 @@ def savequery(request):
 def profile(request):
     user = request.user
     return render(request, "users/profile.html", {"user": user})
-    #return redirect(reverse('users/profile', profile_context)) 
 
 
 @login_required
