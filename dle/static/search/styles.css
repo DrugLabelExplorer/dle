@@ -15,7 +15,7 @@ header {
   }
 
 .brand {
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-family: Impact, Poppins, 'Arial Narrow Bold', sans-serif;
     font-size: 2rem;
     margin-top: 16px;
     margin-left: 40px;
@@ -49,7 +49,7 @@ header {
 
 .nav-link:hover {
     color: #fff;
-    border-bottom: 5px solid red;
+    border-bottom: 5px solid rgb(0, 149, 255);
 }
 
 
@@ -95,7 +95,7 @@ header {
 
 .badge-secondary {
     /* requests count notification*/
-    background-color: red;
+    background-color: rgb(0, 115, 255);
     border-radius: 50%;
     width: 20px;
     height: 20px;
