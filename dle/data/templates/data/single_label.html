@@ -59,7 +59,12 @@
     <!-- display each section's text  -->
     {% for section in sections %}
     <div class="row" id="{{section.section_name|cut:' '}}" style="margin-top: 10px;">
-      <table>
+      <table style="width: 100%">
+        <tr>
+          <td>
+            <hr>
+          </td>
+        </tr>
         <tr>
           <th><h5>{{ section.section_name|title }}</h5></th>
         </tr>
@@ -68,7 +73,7 @@
         </tr>
         <tr>
           <td>
-            <a href="#topdiv">Go to the top</a>.
+            <a href="#topdiv">Go to the top.</a>
           </td>
         </tr>
       </table>
