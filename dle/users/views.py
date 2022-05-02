@@ -132,21 +132,10 @@ def savequery(request):
 
 @login_required
 # user can view any user profile according to specs
-def profile(request, userid):
-    allpost = User.objects.get(
-        pk=userid).posts_created.order_by('-timestamp').all()
-    paginator = Paginator(allpost, 10)
-    page = request.GET.get('page')
-
-    #return render(request, "users/profile.html", {
-    #    "viewed_user": User.objects.get(pk=userid),
-    #    "allposts": paginator.get_page(page)
-    #})       
-    profile_context = {
-        "viewed_user": User.objects.get(pk=userid),
-        "allposts": paginator.get_page(page)
-    }
-    return redirect(reverse('users/profile', profile_context)) 
+def profile(request):
+    user = request.user
+    return render(request, "users/profile.html", {"user": user})
+    #return redirect(reverse('users/profile', profile_context)) 
 
 
 @login_required

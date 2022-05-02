@@ -13,8 +13,8 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path('myqueries/', views.myqueries, name='myqueries'),
 
-    path("profile/<int:userid>", views.profile, name="profile"),
-    #path("profile/", views.profile, name="profile"),
+    #path("profile/<int:username>", views.profile, name="profile"),
+    path("profile/", views.profile, name="profile"),
     #path("save_toggle/<int:postid>", views.save_toggle, name="save_toggle"),
     path("save_toggle/", views.save_toggle, name="save_toggle"),
 

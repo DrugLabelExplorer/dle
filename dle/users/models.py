@@ -2,12 +2,11 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractUser
 from data.models import DrugLabel
+
 # Create your models here.
 class User(AbstractUser):
     # this class consists of requested item as it is unique to each user
-    #pass
-    saved_posts = models.ManyToManyField(
-        "Post", blank=True, related_name="savers")
+    pass
 
 class MyQueries(models.Model):
     # this class consists of my queries as it is unique to each user
@@ -21,16 +20,26 @@ class MyQueries(models.Model):
         
 
 class Post(models.Model):
-    # Post class includes user/account, post contents and timestamp
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="posts_created")
+    # Post class includes author/account, post contents and timestamp
+    # referenced prior lecture notes
+    author = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="posts_created")
     content = models.CharField(max_length=1000) #this would be the drug label in search results
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.content[:10]} {self.user.username}"        
+        return f"{self.content[:10]} {self.author.username}"        
 
+# like
+class Like(models.Model):
 
+    post = models.ForeignKey(Post,on_delete= models.CASCADE,related_name="Post")
+    user = models.ManyToManyField(User,blank =True,related_name="user_info")
+
+    def __str__(self):
+        return f"{self.user} liked {self.post}"
+
+        
 class MyLabel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     drug_label = models.ForeignKey(DrugLabel, on_delete=models.CASCADE)
