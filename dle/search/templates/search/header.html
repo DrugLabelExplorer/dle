@@ -1,0 +1,30 @@
+{% block header %}
+ <header class="nav-down">
+     <div class="brand">
+        <a class="brand-logo" href="{% url 'search:index' %}">Drug Label Explorer</a>
+     </div>
+     <div>
+         <ul class="nav">
+            <!--navigation tool for moving to different pages-->
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'compare:index' %}"> Compare</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:profile' %}"> {{ user.username.capitalize }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:logout' %}">Log out</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:login' %}">Log in</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:register' %}">Register</a>
+            </li>
+            {% endif %}
+        </ul>
+     </div>
+ </header>
+{% endblock %}

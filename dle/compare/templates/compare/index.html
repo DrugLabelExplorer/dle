@@ -1,6 +1,11 @@
-{% extends "compare/layout1.html" %}
+{% extends "search/base.html" %}
 
-{% block body %}
+{% block head %}
+{% load static %}
+<link href="{% static 'compare/styles.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-8">

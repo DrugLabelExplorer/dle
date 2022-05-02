@@ -1,7 +1,11 @@
+{% extends "search/base.html" %}
 
-{% extends "compare/layout.html" %}
+{% block head %}
+{% load static %}
+<link href="{% static 'compare/styles.css' %}" rel="stylesheet">
+{% endblock %}
 
-{% block body %}
+{% block content %}
     <div class="container-fluid">
         <div class="row">
             <h5> Comparison result view. Showing all sections.</h5>

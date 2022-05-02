@@ -1,6 +1,6 @@
-{% extends "users/layout1.html" %}
+{% extends "search/base.html" %}
 
-{% block body %}
+{% block content %}
 <h4>Upload Label</h4>
 <form method="post" action="/users/my_labels/create/" enctype="multipart/form-data">
     {% csrf_token %}

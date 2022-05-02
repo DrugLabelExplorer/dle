@@ -1,4 +1,9 @@
 
+top_displaynames.csv
+
+# ignore media dir
+dle/media/
+
 # ide
 .idea/
 
