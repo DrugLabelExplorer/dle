@@ -10,6 +10,28 @@
     </div>
   </div>
 
+  <div class="content-section">
+    <legend class="border-bottom mb-4">Ulubione</legend>
+    {% for drug in fav_drug %}
+        <div class="row justify-content-start bg-light">
+            <div class="col">
+                {{ drug.drugname }}
+            </div>
+            <div class="col">
+                Saved Queries:
+            </div>
+            <div class="col-3">
+                <a href="{% url 'favourite_add' drug.id %}" class="btn btn-outline-danger btn-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                    </svg>
+                 Unsave
+                </a>
+             </div>
+        </div>
+    {% endfor %}
+  </div>
+
   <nav>
     <!--navigation tool to toggle through pages following pagination specs-->
     <ul class="justify-content-center pagination">

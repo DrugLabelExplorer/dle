@@ -17,29 +17,8 @@ class MyQueries(models.Model):
 
     def __str__(self): 
         return self.query
-        
 
-class Post(models.Model):
-    # Post class includes author/account, post contents and timestamp
-    # referenced prior lecture notes
-    author = models.ForeignKey(
-        "User", on_delete=models.CASCADE, related_name="posts_created")
-    content = models.CharField(max_length=1000) #this would be the drug label in search results
-    timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.content[:10]} {self.author.username}"        
-
-# like
-class Like(models.Model):
-
-    post = models.ForeignKey(Post,on_delete= models.CASCADE,related_name="Post")
-    user = models.ManyToManyField(User,blank =True,related_name="user_info")
-
-    def __str__(self):
-        return f"{self.user} liked {self.post}"
-
-        
 class MyLabel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     drug_label = models.ForeignKey(DrugLabel, on_delete=models.CASCADE)
@@ -56,3 +35,45 @@ class MyLabel(models.Model):
             f"file.name: {self.file.name}, "
             f"is_successfully_parsed: {self.is_successfully_parsed}"
         )        
+
+
+
+# drug label class includes all the drug labels in results of query where user can save them
+class Profile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    drug_label = models.ForeignKey(DrugLabel, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'User: {self.user.username}'
+#class Save_Drug_Label(models.Model):
+    # this class consists of saved drug labels as it is unique to each user
+#    user = models.ForeignKey(User, on_delete=models.CASCADE) # user id is unique to each user
+#    drug_label = models.ForeignKey(DrugLabel, on_delete=models.CASCADE) # drug label id is unique to each user
+    #date = models.DateTimeField(auto_now_add=True) # date of drug label
+
+#    def __str__(self):
+#        return self.drug_label.name
+
+
+
+#class Post(models.Model):
+    # Post class includes author/account, post contents and timestamp
+    # referenced prior lecture notes
+#    author = models.ForeignKey(
+#        "User", on_delete=models.CASCADE, related_name="posts_created")
+#    content = models.CharField(max_length=1000) #this would be the drug label in search results
+#    timestamp = models.DateTimeField(auto_now_add=True)
+
+#    def __str__(self):
+#        return f"{self.content[:10]} {self.author.username}"        
+
+# like
+#class Like(models.Model):
+
+#    post = models.ForeignKey(Post,on_delete= models.CASCADE,related_name="Post")
+#    user = models.ManyToManyField(User,blank =True,related_name="user_info")
+
+#    def __str__(self):
+#        return f"{self.user} liked {self.post}"
+
+

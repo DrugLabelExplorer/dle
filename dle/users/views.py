@@ -15,7 +15,7 @@ from django.urls import reverse
 from django.utils import timezone
 import datetime as dt
 from django.core import management
-from .models import User, MyQueries, Post, MyLabel
+from .models import User, MyQueries, MyLabel, DrugLabel, Profile
 
 
 @login_required
@@ -133,17 +133,47 @@ def savequery(request):
 @login_required
 # user can view any user profile according to specs
 def profile(request):
-    user = request.user
-    return render(request, "users/profile.html", {"user": user})
+    saved_search = DrugLabel.objects.filter(user=request.user)
+    profile_context = {
+        "saved_search": saved_search,
+    }
+    return render(request, "users/profile.html", profile_context)
+#    user = request.user
+#    saved_label = Save_Drug_Label.objects.filter(user=user)
+#    saved_label_context = {'saved_label': saved_label}
+#    return render(request, "users/profile.html", saved_label_context)
+    #return render(request, "users/profile.html", {"user": user})
     #return redirect(reverse('users/profile', profile_context)) 
 
 # user can view saved posts on their profile
-def savedposts(request):
-    user = request.user
-    saved_posts = user.saved_posts.all()
-    return render(request, "users/savedposts.html", {"saved_posts": saved_posts})
-    
+#def savedposts(request):
+#    user = request.user
+#    saved_posts = user.saved_posts.all()
+#    return render(request, "users/savedposts.html", {"saved_posts": saved_posts})
 
+#these might need to be in search/views.py, favourite_add and favourite_list
+@ login_required()
+def favourite_add(request, pk):
+    drug = get_object_or_404(DrugLabel, id=pk)
+    if drug.favorites.filter(id=request.user.id).exists():
+        drug.favorites.remove(request.user)
+    else:
+        drug.favorites.add(request.user)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+@login_required()
+def favourite_list(request):
+    saved_search = DrugLabel.objects.filter(user=request.user)
+    context = {
+        'fav_drug': saved_search
+    }
+
+    return render(request, 'users/profile.html', context)
+
+############################################################################################
+############################################################################################
+############################################################################################
 @login_required
 def my_labels_view(request, msg=None):
     # create a blank form for the user to create a new my_label
