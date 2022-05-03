@@ -44,7 +44,8 @@
                 <label for="section-filter">Select Section: </label>
                 <select name="section-filter" id="sectionFilter" onchange="showSection()">
                     <option value="all">All Sections </option>
-                    <option value="common-sections">All Common Sections </option>
+                    <option value="diff-sections">Sections with Different Text</option>
+                    <option value="matching-sections">Sections with Matching Text</option>
                     {% for sec_name in section_names %}
                     <option value="{{sec_name|cut:' '}}">{{ sec_name|title }}</option>
                     {% endfor %}
@@ -56,31 +57,31 @@
         </div>
         {% if sections %}
             {% for section in sections %}
-                <div class="row sec-content" id="{{section.section_name|cut:' '}}" style="display:block">
+                <div class="row sec-content {{section.textMatches}}" id="{{section.section_name|cut:' '}}" style="display:block">
                     <button type="button" class="collapsible">
                         <i class="fa fa-plus-square-o" style="display:block"> <strong>{{ section.section_name|title }}</strong></i>
                         <i class="fa fa-minus-square-o" style="display:none"> <strong>{{ section.section_name|title }}</strong></i>
                     </button>
-                    <table class="section-table" style="display:none">
+                    <table class="section-table" style="display:none" style="width:100%">
                         <tr>
-                          <td class="{{ section.textMatches }} section-td" style="width:50%">
+                          <td class=" td-{{section.textMatches}} section-td" style="width:50%">
                               <p>
                                 {% for tuple in section.section_text1 %}
                                     {% if tuple.0 == 0 %}
                                         {{ tuple.1|safe }}
                                     {% elif tuple.0 == -1 %}
-                                        <span class="diff-text-highlight">{{ tuple.1 }}</span>
+                                        <span class="diff-text-highlight">{{ tuple.1|safe }}</span>
                                     {% endif %}
                                 {% endfor %}
                               </p>
                           </td>
-                          <td class="{{ section.textMatches }} section-td" style="width:50%">
+                          <td class="td-{{section.textMatches}} section-td" style="width:50%">
                               <p>
                                 {% for tuple in section.section_text2 %}
                                     {% if tuple.0 == 0 %}
                                         {{ tuple.1|safe }}
                                     {% elif tuple.0 == 1 %}
-                                        <span class="diff-text-highlight">{{ tuple.1 }}</span>
+                                        <span class="diff-text-highlight">{{ tuple.1|safe}}</span>
                                     {% endif %}
                                 {% endfor %}
 
@@ -144,6 +145,36 @@
                     tbl.style.display = "none";
                     const btn = div.getElementsByTagName('button')[0];
                     btn.classList.remove('active');
+                }
+            } else if (selected_sec == 'matching-sections') { 
+                const sec_divs = document.getElementsByClassName('sec-content');
+
+                for (const div of sec_divs) {
+                    div.style.display = 'none';
+                    const tbl = div.getElementsByTagName('table')[0];
+                    tbl.style.display = "none";
+                    const btn = div.getElementsByTagName('button')[0];
+                    btn.classList.remove('active');
+                }
+                const common_sec = document.getElementsByClassName('matching-section');
+
+                for (const div of common_sec) {
+                    div.style.display = 'block';
+                }
+            } else if (selected_sec == 'diff-sections') { 
+                const sec_divs = document.getElementsByClassName('sec-content');
+
+                for (const div of sec_divs) {
+                    div.style.display = 'none';
+                    const tbl = div.getElementsByTagName('table')[0];
+                    tbl.style.display = "none";
+                    const btn = div.getElementsByTagName('button')[0];
+                    btn.classList.remove('active');
+                }
+                const common_sec = document.getElementsByClassName('diff-section');
+
+                for (const div of common_sec) {
+                    div.style.display = 'block';
                 }
             } else {
                 const sec_divs = document.getElementsByClassName('sec-content');
