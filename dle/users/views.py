@@ -75,27 +75,23 @@ def profile(request):
 @login_required
 def change_password(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
 
         # Ensure password matches confirmation
         if password != confirmation:
             return render(
-                request, "users/change_password.html", {"message": "Passwords must match."}
+                request, "users/change_password.html", {"error_msg": "Passwords must match."}
             )
 
-        # Attempt to create new user
+        # Attempt update password
         try:
-            print("try 1")
-            user = User.objects.get(username=username)
+            user = User.objects.get(username=request.user.username)
             user.set_password(password)
             user.save()
         except IntegrityError:
-            print("execption 2")
             return render(
-                request, "users/change_password.html", {"message": "Password change failed. Try again."}
+                request, "users/change_password.html", {"error_msg": "Password change failed. Try again."}
             )
         login(request, user)
         return render(
