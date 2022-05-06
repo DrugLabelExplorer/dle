@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import DrugLabel, LabelProduct, ProductSection
 from django.core.exceptions import ObjectDoesNotExist
 from compare.util import *
+from .util import *
 
 
 def index(request):
@@ -25,27 +26,10 @@ def single_label_view(request, drug_label_id, search_text=""):
             
             # If navigating from search result to single label view
             # highlight the search text within the single label section text
-            if search_text != "":
-                text = ""
-                for word in section.section_text.split():
-                    for search_word in search_text.split():
-                        if word.lower() == search_word.lower():
-                            text += f"<span style='background-color:yellow'> {word} </span>"
-                        else:
-                            text += f"{word} "
-            else:
-                text = section.section_text
+            text = highlight_query_string(section.section_text, search_text)
 
             # convert common xml tags to html tags
-            text = text.replace('<list listtype="unordered" ', '<ul ')
-            text = text.replace('<list', '<ul ')
-            text = text.replace('</list>', '</ul>')
-            text = text.replace('<item', '<li')
-            text = text.replace('</item>', '</li>')
-            text = text.replace('<paragraph', '<p')
-            text = text.replace('</paragraph>', '</p>')
-            text = text.replace('<linkhtml', '<a')
-            text = text.replace('</linkhtml>', '</a>')
+            text = reformat_html_tags_in_raw_text(text)
             
             if drug_label.source == "EMA":
                 sections_dict[section.section_name]["section_text"] = text.replace("\n", "<br>")
@@ -56,9 +40,12 @@ def single_label_view(request, drug_label_id, search_text=""):
         sections_dict = {}
         section_names = []
 
-    # get all drug labels with the same source_product_number
-    drug_label_versions = DrugLabel.objects.filter(
-        source_product_number=drug_label.source_product_number).order_by('version_date')
+    # get all drug labels with the same product_name and marketer
+    drug_label_versions = DrugLabel.objects\
+        .filter(product_name=drug_label.product_name)\
+        .filter(marketer=drug_label.marketer)\
+        .order_by('version_date')
+
     section_names.sort()
 
     context = {
