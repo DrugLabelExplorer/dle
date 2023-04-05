@@ -1,0 +1,39 @@
+{% extends "search/base.html" %}
+{% block head %}
+<!-- Searchkit assets -->
+<script src="https://cdn.jsdelivr.net/npm/@searchkit/instantsearch-client@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/searchkit@latest"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css"/>
+<link href="../../static/search/styles.css" rel="stylesheet" />
+
+{% endblock %}
+{% block content %}
+
+<div class="ais-InstantSearch">
+    <div id="current-refinements"></div>
+    <div class="left-panel">
+      <h2>Filters</h2>
+      <div id="hits-per-page"></div>
+        <p><strong>Section Name</strong></p>
+        <div id="section-name-filter"></div>
+        <p><strong>Drug Label Source</strong></p>
+        <div id="drug-label-source-filter"></div>
+        <p><strong>Drug Label Product Name</strong></p>
+        <div id="drug-label-product-name-filter"></div>
+        <p><strong>Drug Label Generic Name</strong></p>
+        <div id="drug-label-generic-name-filter"></div>
+    </div>
+    <div class="right-panel">
+      <div id="searchbox" class="ais-SearchBox"></div>
+      <div id="hits"></div>
+      <div id="pagination"></div>
+    </div>
+  </div>
+   
+{% endblock %}
+
+{% block footer_scripts %}
+{% load static %}
+<script type="text/javascript" src="{% static 'search/es_search.js' %}"></script>
+{% endblock %}
