@@ -1,5 +1,7 @@
 from django.urls import path
+
 from . import views
+
 
 app_name = "users"
 
@@ -9,4 +11,5 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("my_labels/", views.my_labels_view, name="my_labels"),
     path("my_labels/create/", views.create_my_label, name="create_my_label"),
+    path("saved_searches/create/", views.create_saved_search, name="create_my_saved_search"),
 ]

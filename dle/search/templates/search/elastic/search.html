@@ -1,0 +1,102 @@
+{% extends "search/base.html" %}
+{% block head %}
+<!-- Searchkit assets -->
+<script src="https://cdn.jsdelivr.net/npm/@searchkit/instantsearch-client@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/searchkit@latest"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css"/>
+<link href="../../static/search/styles.css" rel="stylesheet" />
+
+{% endblock %}
+{% block content %}
+
+<div class="ais-InstantSearch">
+    <div id="current-refinements"></div>
+    <div class="left-panel">
+      <h2>Filters</h2>
+      <div id="hits-per-page"></div>
+        <p><strong>Section Name</strong></p>
+        <div id="section-name-filter"></div>
+        <p><strong>Drug Label Source</strong></p>
+        <div id="drug-label-source-filter"></div>
+        <p><strong>Drug Label Product Name</strong></p>
+        <div id="drug-label-product-name-filter"></div>
+        <p><strong>Drug Label Generic Name</strong></p>
+        <div id="drug-label-generic-name-filter"></div>
+        {% if user.is_authenticated %}
+        <h2>Save Search</h2>
+        <form method="post" action="/users/saved_searches/create/" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form }}        
+          <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+        {% endif %}
+        <div id="compare-button-container">
+          <h2>Compare Labels</h2>
+          <form>
+            <input class="btn btn-primary" type="button" value="Compare Selected Labels" onclick="javascript: compareLabels();"/>
+          </form>
+        </div>
+    </div>
+    <div class="right-panel">
+      <div id="searchbox" class="ais-SearchBox"></div>
+      <div id="hits"></div>
+      <div id="pagination"></div>
+    </div>
+  </div>
+   
+{% endblock %}
+
+{% block footer_scripts %}
+{% load static %}
+
+{{ SEARCHKIT_SERVICE|json_script:"SEARCHKIT_SERVICE" }}
+{{ VECTORIZE_SERVICE|json_script:"VECTORIZE_SERVICE"}}
+<script>
+  const SEARCHKIT_SERVICE = JSON.parse(document.getElementById('SEARCHKIT_SERVICE').textContent);
+  const VECTORIZE_SERVICE = JSON.parse(document.getElementById('VECTORIZE_SERVICE').textContent);
+</script>
+<script type="text/javascript" src="{% static 'search/es_search.js' %}"></script>
+<script>
+  function getUrl() {
+    var url = document.URL;
+    document.getElementById("id_url").value = url;
+  }
+  window.addEventListener('load', getUrl);
+  document.body.addEventListener('click', getUrl, true); 
+  document.body.addEventListener('keyup', getUrl, true);
+  document.body.addEventListener('click', shouldLabelsBeShown, true);
+
+  function shouldLabelsBeShown() {
+    var checkedBoxes = document.querySelectorAll('input[name=compare]:checked');
+    var link = document.getElementById('compare-button-container');
+
+    if(checkedBoxes.length == 2 || checkedBoxes.length == 3) {
+      link.style.display = 'inline-block';
+      link.style.visibility = 'visible';
+    } else {
+      link.style.display = 'none';
+      link.style.visibility = 'hidden';
+    }
+  }
+
+  function compareLabels() {
+    var checkedBoxes = document.querySelectorAll('input[name=compare]:checked');
+    var compareUrl = '../compare/compare_labels?';
+    var searchTerm = document.querySelector('.ais-SearchBox-input').value;
+
+    compareUrl += 'search_text=' + searchTerm;
+
+    for (i = 0; i < checkedBoxes.length; i++) {
+      if(i == 0) {
+        compareUrl += `&first-label=${checkedBoxes[0].value}`;
+      } else if(i == 1) {
+        compareUrl += `&second-label=${checkedBoxes[1].value}`;
+      } else if(i == 2) {
+        compareUrl += `&third-label=${checkedBoxes[2].value}`;
+      }
+    }
+    location.href = compareUrl;
+  }
+</script>
+{% endblock %}

@@ -1,19 +1,21 @@
+import datetime as dt
+
+from django.core import management
+from django.db import IntegrityError, connection
+from django.shortcuts import redirect, render
+from django.urls import reverse
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from .models import User, MyLabel
+
 from data.models import DrugLabel
-from .forms import MyLabelForm
-import datetime as dt
-from django.core import management
-from django.db import connection
+
+from .forms import MyLabelForm, SavedSearchForm
+from .models import MyLabel, SavedSearch, User
 
 
 def login_view(request):
     if request.method == "POST":
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
@@ -49,18 +51,14 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(
-                request, "users/register.html", {"message": "Passwords must match."}
-            )
+            return render(request, "users/register.html", {"message": "Passwords must match."})
 
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
-            return render(
-                request, "users/register.html", {"message": "Username already taken."}
-            )
+            return render(request, "users/register.html", {"message": "Username already taken."})
         login(request, user)
         return redirect(reverse("search:index"), request)
     else:
@@ -74,12 +72,35 @@ def my_labels_view(request, msg=None):
     # get a list of the user's MyLabels
     # note, could have performance issues if user has a "lot" of labels
     my_labels = MyLabel.objects.filter(user=request.user).all()
+    saved_searches = SavedSearch.objects.filter(user=request.user).all()
+
     context = {
         "form": form,
         "my_labels": my_labels,
         "message": msg,
+        "saved_searches": saved_searches,
     }
     return render(request, "users/my_labels.html", context)
+
+
+@login_required
+def create_saved_search(request):
+    """Accepts a request for a user to create saved search record"""
+    if request.method == "POST":
+        form = SavedSearchForm(request.POST)
+        if form.is_valid():
+            url = form.cleaned_data["url"]
+            name = form.cleaned_data["name"]
+
+            saved_search = SavedSearch(
+                url=url,
+                name=name,
+                user=request.user,
+            )
+
+            saved_search.save()
+
+            return redirect(reverse("users:my_labels"))
 
 
 @login_required
@@ -130,11 +151,7 @@ def create_my_label(request):
             # process the file
             # send to load_fda_data or load_ema_data
             # --type my_label --my_label_id ml.id
-            command = (
-                "load_fda_data"
-                if form.cleaned_data["source"] == "FDA"
-                else "load_ema_data"
-            )
+            command = "load_fda_data" if form.cleaned_data["source"] == "FDA" else "load_ema_data"
             management.call_command(command, type="my_label", my_label_id=ml.id)
 
             # add to latest_drug_labels
