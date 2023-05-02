@@ -1,0 +1,103 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+until python3 /app/postgres_ready.py; do
+  >&2 echo "Waiting for PostgreSQL to become available..."
+  sleep 1
+done
+>&2 echo "PostgreSQL is available"
+
+# Recommended way to bootstrap project is with a PSQL dump; fixtures can cause RAM issues.
+# Run this first, no need to migrate if you're loading a PSQL dump
+if [[ ($LOAD_PSQL_DUMP) && ("$LOAD_PSQL_DUMP" = "True") ]]; then
+  echo "Loading PSQL dump"
+  # PSQL dump should be in -fc format (custom format, compressed)
+  pg_restore --verbose --clean --no-acl --no-owner -d $DATABASE_URL "/app/media/psql.dump"
+  echo "Finished loading PSQL dump"
+fi
+
+if [[ ($MIGRATE) && ("$MIGRATE" = "True") ]]; then
+  python3 manage.py makemigrations --no-input
+  python3 manage.py migrate --no-input --fake-initial
+  echo "Migrations finished"
+  python3 manage.py collectstatic --noinput
+  echo "Static files collected"
+fi
+
+
+if [[ ($INIT_SUPERUSER) && ("$INIT_SUPERUSER" = "True") ]]; then
+  # Uses the DJANGO_SUPERUSER_* environment variables to create a superuser
+  echo "Creating superuser"
+  python3 manage.py create_superuser_if_none_exists --user $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL --password $DJANGO_SUPERUSER_PASSWORD
+fi
+
+# If you're just starting out, you can load fixtures instead of running a scrape.
+# Fixtures are a JSON file containing the data for the database
+# Place the JSON file in /app/data/fixtures (obtain from S3 unless we switch to Git LFS)
+if [[ ($LOAD_FIXTURES) && ("$LOAD_FIXTURES" = "True") ]]; then
+  echo "Loading fixtures"
+  python3 manage.py loaddata /app/data/fixtures/*.json
+  echo "Finished loading fixtures"
+fi
+
+# Otherwise, if not loading fixtures or or using a PSQL dump,
+# you can run a scrape for new data and then vectorize it. This will take a long time
+if [[ ($LOAD) && ("$LOAD" = "True") ]]; then
+  echo "Beginning the Django data ingest"
+  echo "Loading EMA (EU) data"
+  python3 manage.py load_ema_data --type full
+  echo "Finished loading EMA (EU) data"
+  echo "Loading FDA (US) data"
+  python3 manage.py load_fda_data --type full
+  echo "Finished loading FDA (US) data"
+  echo "Loading TGA (Australia) data"
+  python3 manage.py load_tga_data --type full
+  echo "Finished loading TGA (Australia) data"
+  echo "Updating latest drug labels"
+  echo "Loading HC (Health Canada) data"
+  python3 manage.py load_hc_data --type full
+  echo "Finished loading HC (Health Canada) data"
+  python3 manage.py update_latest_drug_labels
+  echo "Finished updating latest drug labels"
+  echo "Ended the Django data ingest"
+
+  if [[ ($VECTORIZE) && ("$VECTORIZE" = "True") ]]; then
+    echo "Starting to vectorize the data"
+    python3 manage.py vectorize --agency all
+    echo "Finished vectorizing the data"
+  fi
+fi
+
+
+# Provisions and ingests data into Elasticsearch
+if [[ ($PROVISION_ES) && ("$PROVISION_ES" = "True")]]; then
+  echo "Provisioning and populating Elasticsearch"
+  python3 manage.py provision_elastic --agency all --mapping_file "/app/search/mappings/provision.json"
+  echo "Finished provisioning Elasticsearch"
+fi
+
+# Update labels weekly
+if [[ ($UPDATE_WEEKLY) && ("$UPDATE_WEEKLY" = "True") ]]; then
+  crontab ./update_database-cron
+  cron
+fi
+
+if [[ ($SCHEDULED_TASK) && ("$SCHEDULED_TASK" = "True") ]]; then
+  # If it's a scheduled ECS task, exit rather than starting the Django web server
+  echo "Scheduled task complete"
+  exit 0
+fi
+
+# In production, use Gunicorn + Nginx
+# TODO maybe reverse this so if nothing is passed the default is Nginx?
+if [[ ($USE_NGINX) && ("$USE_NGINX" = "True" ) ]]; then
+  echo "Nginx proxying requests from :8000 (Django app accessible from http://localhost:8000/)"
+  nginx
+  echo "Using Gunicorn on :5000 as app server / wsgi host"
+  gunicorn --bind :5000 --workers 3 --threads 16 --timeout 0 dle.wsgi:application
+else
+  # When in dev use the Django runserver for hot reload
+  python3 manage.py runserver 0.0.0.0:8000
+fi
