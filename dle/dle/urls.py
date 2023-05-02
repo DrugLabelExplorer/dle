@@ -13,10 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.http import HttpRequest
-from django.urls import path, include
 from django.shortcuts import redirect
+from django.urls import include, path
+
+
+# from django.contrib import admin
 
 
 def redirect_from_root_view(request: HttpRequest):
@@ -31,4 +35,5 @@ urlpatterns = [
     path("", redirect_from_root_view),
     path("search/", include("search.urls")),
     path("compare/", include("compare.urls")),
-]
+    path("api/", include("api.urls")),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
