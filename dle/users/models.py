@@ -1,5 +1,7 @@
 from django.db import models
+
 from django.contrib.auth.models import AbstractUser
+
 from data.models import DrugLabel
 
 
@@ -23,3 +25,9 @@ class MyLabel(models.Model):
             f"file.name: {self.file.name}, "
             f"is_successfully_parsed: {self.is_successfully_parsed}"
         )
+
+
+class SavedSearch(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    url = models.TextField()
+    name = models.CharField(max_length=255, db_index=True)

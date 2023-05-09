@@ -1,0 +1,35 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: 'pip'
+
+      - name: Install requirements for test environment
+        run: |
+          pip install -r ./dle/tests/pytest_requirements.txt \
+          pip install -r ./dle/requirements.txt
+      
+      - name: Ensure browsers are installed for Playwright
+        run: python -m playwright install --with-deps
+
+      - name: Run Pytest tests with pytest-docker
+        working-directory: dle
+        run: pytest -vv -s
